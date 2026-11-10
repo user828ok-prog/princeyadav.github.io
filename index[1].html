@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080d1d">
+<meta name="description" content="Wake Up Pro - strict morning alarm and SEE study planner">
+<link rel="manifest" href="manifest.json">
+<title>Wake Up Pro</title>
+<style>
+:root{--bg:#080d1d;--panel:#111a31;--panel2:#172440;--line:#273756;--text:#f4f7ff;--muted:#9eacc8;--blue:#4f8cff;--cyan:#40d9e8;--purple:#9874ff;--green:#42d6a0;--red:#ff647c;--gold:#ffd166}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 15% 0%,#182d59 0,transparent 35%),radial-gradient(circle at 100% 20%,#30205a 0,transparent 32%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;min-height:100vh}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:1040px;margin:auto;padding:20px 18px 44px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 24px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,var(--blue),var(--purple));display:grid;place-items:center;font-size:23px;box-shadow:0 8px 28px #536eff55}
+.brand h1{font-size:20px;letter-spacing:1.2px;margin:0}
+.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.pill{border:1px solid #31517b;background:#10213c;color:#b9d5ff;padding:9px 12px;border-radius:99px;font-size:12px}
+.hero{border:1px solid #30456d;border-radius:26px;padding:25px;background:linear-gradient(120deg,#15284aee,#211c45ee);box-shadow:0 18px 55px #0005;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-70px;top:-90px;background:#8c76ff22;filter:blur(2px)}
+.eyebrow{font-size:11px;letter-spacing:2px;color:#9dc4ff;font-weight:800}
+.clock{font-size:clamp(42px,9vw,70px);font-weight:800;letter-spacing:-2px;margin:10px 0 0;font-variant-numeric:tabular-nums}
+.date{color:#aab8d3;font-size:14px;margin-top:4px}
+.hero-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;flex-wrap:wrap}
+.status{display:flex;align-items:center;gap:8px;color:#cbd8f0;font-size:13px}
+.dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 12px var(--green)}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;margin-top:18px}
+.card{background:linear-gradient(160deg,#121d35,#0e172b);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 12px 35px #0003}
+.card h2{font-size:17px;margin:0 0 5px}
+.sub{color:var(--muted);font-size:12px;margin:0 0 18px;line-height:1.5}
+.field-label{display:block;color:#b8c6df;font-size:12px;font-weight:700;margin:13px 0 7px}
+.timegrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+input,select{width:100%;background:#0a1326;border:1px solid #30415f;color:#f5f7ff;border-radius:12px;padding:13px 12px;outline:none}
+input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #4f8cff22}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.day{position:relative}
+.day input{position:absolute;opacity:0;pointer-events:none}
+.day span{display:grid;place-items:center;min-height:39px;border-radius:10px;background:#0a1326;border:1px solid #30415f;color:#9eacc8;font-size:11px;font-weight:700}
+.day input:checked+span{background:linear-gradient(135deg,#2868d8,#7655dc);border-color:transparent;color:white}
+.btn{border:0;border-radius:12px;padding:13px 16px;font-weight:800;transition:.18s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.98)}
+.primary{background:linear-gradient(110deg,#438cff,#805bfa);color:white;box-shadow:0 8px 20px #4e73ff33}
+.secondary{background:#1b2b49;color:#d8e5ff;border:1px solid #344d75}
+.danger{background:#3a1b2a;color:#ff9cac;border:1px solid #693044}
+.success{background:#12372f;color:#8df0c8;border:1px solid #246b57}
+.full{width:100%;margin-top:16px}
+.voicebox{background:#0a1428;border:1px solid #293d5d;border-radius:15px;padding:14px;margin-top:14px}
+.voicebox strong{font-size:13px}
+.voicebox p{color:var(--muted);font-size:12px;line-height:1.55;margin:7px 0 0}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1}
+.alarm-state{margin-top:13px;padding:12px 13px;border-radius:12px;background:#0a1428;border:1px solid #293d5d;color:#b9c9e5;font-size:13px;line-height:1.6}
+.task-form{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.task-form .wide{grid-column:1/-1}
+.task-list{display:grid;gap:9px;margin-top:15px}
+.task{display:flex;align-items:center;gap:10px;background:#0a1428;border:1px solid #293d5d;border-radius:13px;padding:12px}
+.task input{width:18px;height:18px;accent-color:#5b9cff}
+.task-info{flex:1;min-width:0}
+.task-info strong{display:block;font-size:13px;overflow-wrap:anywhere}
+.task-info small{color:var(--muted);font-size:11px}
+.task.done .task-info strong{text-decoration:line-through;color:#8190aa}
+.iconbtn{background:#2c1a2a;border:1px solid #573044;color:#ff9cac;border-radius:9px;padding:8px 10px}
+.note{font-size:11px;color:#8494b3;line-height:1.6;margin-top:13px}
+.empty{color:#8291ad;text-align:center;padding:20px 8px;font-size:13px;border:1px dashed #30415f;border-radius:12px}
+.footer{text-align:center;color:#657593;font-size:11px;margin-top:22px;line-height:1.7}
+.modal{position:fixed;inset:0;background:#020611eF;z-index:10;display:none;align-items:center;justify-content:center;padding:22px}
+.modal.show{display:flex}
+.modalbox{width:min(480px,100%);background:linear-gradient(150deg,#1b2a4c,#111a30);border:1px solid #52648c;border-radius:24px;padding:25px;text-align:center;box-shadow:0 20px 80px #000b}
+.modalbox h2{font-size:25px;margin:8px 0}
+.modalbox p{color:#c0cce2;line-height:1.6;font-size:14px}
+.wakeicon{font-size:44px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.app{padding:13px 12px 30px}.hero{padding:21px}.card{padding:18px}}
+@media(max-width:360px){.days{gap:3px}.day span{font-size:9px}.timegrid{gap:6px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><div class="logo">⏰</div><div><h1>WAKE UP PRO</h1><p>DISCIPLINE STARTS BEFORE SUNRISE</p></div></div>
+    <div class="pill">SEE MODE · CLASS 10</div>
+  </div>
+
+  <section class="hero">
+    <div class="eyebrow">YOUR DAILY COMMAND CENTER</div>
+    <div class="clock" id="clock">--:--:--</div>
+    <div class="date" id="date">Loading date...</div>
+    <div class="hero-bottom">
+      <div class="status"><span class="dot"></span><span id="heroStatus">Alarm system ready</span></div>
+      <div class="pill" id="nextAlarm">No alarm scheduled</div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>⏰ Morning alarm</h2>
+      <p class="sub">Choose the exact time and the days you want to wake up.</p>
+      <label class="field-label">ALARM TIME · 12-HOUR FORMAT</label>
+      <div class="timegrid">
+        <div><label class="field-label">HOUR</label><select id="hour"></select></div>
+        <div><label class="field-label">MINUTE</label><select id="minute"></select></div>
+        <div><label class="field-label">PERIOD</label><select id="period"><option>AM</option><option>PM</option></select></div>
+      </div>
+      <label class="field-label">REPEAT ON</label>
+      <div class="days" id="days">
+        <label class="day"><input type="checkbox" value="1" checked><span>MON</span></label>
+        <label class="day"><input type="checkbox" value="2" checked><span>TUE</span></label>
+        <label class="day"><input type="checkbox" value="3" checked><span>WED</span></label>
+        <label class="day"><input type="checkbox" value="4" checked><span>THU</span></label>
+        <label class="day"><input type="checkbox" value="5" checked><span>FRI</span></label>
+        <label class="day"><input type="checkbox" value="6" checked><span>SAT</span></label>
+        <label class="day"><input type="checkbox" value="0" checked><span>SUN</span></label>
+      </div>
+      <label class="field-label">WAKE-UP ANNOUNCEMENT</label>
+      <select id="messageChoice">
+        <option value="strict">Strict SEE wake-up message</option>
+        <option value="custom">My own message</option>
+      </select>
+      <textarea id="customMessage" rows="2" placeholder="Write your own wake-up message..." style="display:none;width:100%;margin-top:8px;background:#0a1326;border:1px solid #30415f;border-radius:12px;color:white;padding:12px"></textarea>
+      <button class="btn primary full" id="saveAlarm">SAVE ALARM SETTINGS</button>
+      <div class="row">
+        <button class="btn secondary" id="testVoice">▶ TEST VOICE</button>
+        <button class="btn danger" id="stopVoice">■ STOP VOICE</button>
+      </div>
+      <div class="alarm-state" id="alarmState">No alarm has been saved yet.</div>
+      <div class="voicebox">
+        <strong>🎙 STRICT VOICE SETTINGS</strong>
+        <p>Hindi voice · lower pitch · firm delivery · repeated wake-up announcement. The app selects the closest available Hindi male-sounding voice on your phone.</p>
+        <label class="field-label">VOICE PITCH</label>
+        <input id="pitch" type="range" min="0.65" max="1" step="0.05" value="0.75">
+        <label class="field-label">SPEAKING SPEED</label>
+        <input id="rate" type="range" min="0.85" max="1.15" step="0.05" value="0.95">
+      </div>
+      <p class="note">For safety and reliability, the wake-up announcement repeats continuously until you press the stop button. A web app cannot force a voice to sound truly harsh or male if your phone does not provide that voice.</p>
+    </section>
+
+    <section class="card">
+      <h2>📚 SEE study planner</h2>
+      <p class="sub">Plan your subjects, set study times and track your daily progress.</p>
+      <div class="task-form">
+        <div><label class="field-label">SUBJECT</label><select id="subject"><option>Mathematics</option><option>Science</option><option>English</option><option>Nepali</option><option>Social Studies</option><option>Computer Science</option></select></div>
+        <div><label class="field-label">STUDY TIME</label><input id="taskTime" type="time"></div>
+        <div class="wide"><label class="field-label">YOUR STUDY TASK</label><input id="taskName" placeholder="Example: Revise algebra and solve 10 questions"></div>
+        <button class="btn primary wide" id="addTask">＋ ADD STUDY TASK</button>
+      </div>
+      <div class="row" style="margin-top:18px">
+        <div class="pill" id="progressLabel">0 / 0 completed</div>
+        <div class="pill" id="progressPercent">0% progress</div>
+      </div>
+      <div class="task-list" id="taskList"><div class="empty">Your study tasks will appear here.</div></div>
+      <p class="note">Task voice reminders work while the app is open and active. Your tasks are saved on this device.</p>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:18px">
+    <h2>📲 Install on Android</h2>
+    <p class="sub">Host this project on an HTTPS website, open it in Chrome on Android, then use Chrome menu → Install app or Add to Home screen.</p>
+    <button class="btn secondary" id="installBtn" style="display:none">INSTALL WAKE UP PRO</button>
+    <button class="btn secondary" id="notifyBtn">ENABLE NOTIFICATIONS</button>
+    <div class="alarm-state" id="notifyStatus">Notifications are optional. Allow them if you want browser reminders.</div>
+  </section>
+  <div class="footer">WAKE UP PRO · BUILT FOR CONSISTENCY<br>Use your phone's Clock app as a backup alarm. Browser alarms are not guaranteed when the app is closed or the phone is sleeping.</div>
+</div>
+
+<div class="modal" id="wakeModal">
+  <div class="modalbox">
+    <div class="wakeicon">⏰</div>
+    <div class="eyebrow">TIME TO GET UP</div>
+    <h2>WAKE UP. NO EXCUSES.</h2>
+    <p id="modalText">Your SEE preparation needs consistency. Get up, get ready and begin today's work.</p>
+    <button class="btn primary full" id="dismissAlarm">I AM AWAKE · STOP ALARM</button>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const daysShort=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+let alarm=JSON.parse(localStorage.getItem("wup_alarm")||"null");
+let tasks=JSON.parse(localStorage.getItem("wup_tasks")||"[]");
+let lastRang="";
+let taskFired=new Set();
+let ringTimer=null;
+let voices=[];
+let deferredInstall=null;
+
+for(let n=1;n<=12;n++)$("hour").add(new Option(String(n).padStart(2,"0"),n));
+for(let n=0;n<60;n++)$("minute").add(new Option(String(n).padStart(2,"0"),n));
+
+function updateClock(){
+ const d=new Date();
+ $("clock").textContent=d.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+ $("date").textContent=d.toLocaleDateString("en-US",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+}
+setInterval(updateClock,1000);updateClock();
+
+function getVoices(){
+ voices=speechSynthesis.getVoices();
+}
+getVoices();
+if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=getVoices;
+
+function chooseHindiVoice(){
+ const hindi=voices.filter(v=>/^hi(-|_)?in$/i.test(v.lang)||v.lang.toLowerCase().startsWith("hi"));
+ const maleHints=/male|man|ravi|hemant|madhur|amit|arjun|rahul|aditya/i;
+ return hindi.find(v=>maleHints.test(v.name))||hindi[0]||null;
+}
+function speakHindi(text){
+ if(!("speechSynthesis" in window)){alert("Speech synthesis is not supported by this browser.");return;}
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);
+ u.lang="hi-IN";
+ u.rate=Number($("rate").value);
+ u.pitch=Number($("pitch").value);
+ const v=chooseHindiVoice();
+ if(v){u.voice=v;u.lang=v.lang;}
+ speechSynthesis.speak(u);
+}
+const strictMessage="सुनो! सुबह हो चुकी है। अब उठो! तुम्हारा SEE परीक्षा का समय नजदीक आ रहा है। बहाने बंद करो। तुरंत बिस्तर से उठो, तैयार हो जाओ और अपनी पढ़ाई शुरू करो। हर दिन की मेहनत तुम्हारे लक्ष्य के करीब ले जाएगी। उठो! अभी पढ़ाई शुरू करो!";
+function getAlarmMessage(){
+ if(alarm&&alarm.messageChoice==="custom"&&alarm.customMessage.trim())return alarm.customMessage.trim();
+ return strictMessage;
+}
+function testVoice(){speakHindi(strictMessage);}
+$("testVoice").addEventListener("click",testVoice);
+$("stopVoice").addEventListener("click",()=>speechSynthesis.cancel());
+$("messageChoice").addEventListener("change",()=>{$("customMessage").style.display=$("messageChoice").value==="custom"?"block":"none";});
+
+function saveAlarm(){
+ const selected=[...document.querySelectorAll("#days input:checked")].map(x=>Number(x.value));
+ if(!selected.length){alert("Select at least one repeat day.");return;}
+ alarm={
+  hour:Number($("hour").value),minute:Number($("minute").value),period:$("period").value,
+  days:selected,messageChoice:$("messageChoice").value,customMessage:$("customMessage").value,
+  enabled:true
+ };
+ localStorage.setItem("wup_alarm",JSON.stringify(alarm));
+ renderAlarm();
+}
+$("saveAlarm").addEventListener("click",saveAlarm);
+
+function formatAlarm(a){
+ return String(a.hour).padStart(2,"0")+":"+String(a.minute).padStart(2,"0")+" "+a.period;
+}
+function renderAlarm(){
+ if(!alarm){
+  $("alarmState").textContent="No alarm has been saved yet.";
+  $("heroStatus").textContent="Alarm system ready";
+  $("nextAlarm").textContent="No alarm scheduled";
+  return;
+ }
+ const dayText=alarm.days.length===7?"Every day":alarm.days.map(d=>daysShort[d]).join(", ");
+ $("alarmState").innerHTML="<b>"+formatAlarm(alarm)+"</b> · "+dayText+"<br>Status: "+(alarm.enabled?"ACTIVE":"OFF")+
+ "<br><button class='btn secondary' id='toggleAlarm' style='margin-top:9px'>"+(alarm.enabled?"TURN ALARM OFF":"TURN ALARM ON")+"</button> "+
+ "<button class='btn danger' id='deleteAlarm' style='margin-top:9px'>DELETE</button>";
+ $("heroStatus").textContent=alarm.enabled?"Alarm is active":"Alarm is turned off";
+ $("nextAlarm").textContent=formatAlarm(alarm);
+ $("toggleAlarm").onclick=()=>{alarm.enabled=!alarm.enabled;localStorage.setItem("wup_alarm",JSON.stringify(alarm));renderAlarm();};
+ $("deleteAlarm").onclick=()=>{alarm=null;localStorage.removeItem("wup_alarm");renderAlarm();};
+}
+function nowMatchesAlarm(d){
+ let h=d.getHours(),period=h>=12?"PM":"AM",display=h%12||12;
+ return alarm&&alarm.enabled&&alarm.days.includes(d.getDay())&&display===alarm.hour&&d.getMinutes()===alarm.minute&&period===alarm.period;
+}
+function startAlarm(){
+ $("modalText").textContent="तुम्हारा SEE परीक्षा का समय नजदीक आ रहा है। उठो और आज का लक्ष्य पूरा करो।";
+ $("wakeModal").classList.add("show");
+ speakHindi(getAlarmMessage());
+ if(ringTimer)clearInterval(ringTimer);
+ ringTimer=setInterval(()=>{
+  if(!speechSynthesis.speaking)speakHindi(getAlarmMessage());
+ },12000);
+ if("vibrate" in navigator)navigator.vibrate([500,250,500,250,900]);
+}
+function stopAlarm(){
+ if(ringTimer)clearInterval(ringTimer);
+ ringTimer=null;
+ speechSynthesis.cancel();
+ $("wakeModal").classList.remove("show");
+ if("vibrate" in navigator)navigator.vibrate(0);
+}
+$("dismissAlarm").addEventListener("click",stopAlarm);
+function checkAlarm(){
+ const d=new Date();
+ const key=d.toDateString()+"-"+d.getHours()+"-"+d.getMinutes();
+ if(nowMatchesAlarm(d)&&lastRang!==key){lastRang=key;startAlarm();}
+}
+setInterval(checkAlarm,1000);
+
+function renderTasks(){
+ const list=$("taskList");list.innerHTML="";
+ const completed=tasks.filter(t=>t.done).length;
+ $("progressLabel").textContent=completed+" / "+tasks.length+" completed";
+ $("progressPercent").textContent=(tasks.length?Math.round(completed/tasks.length*100):0)+"% progress";
+ if(!tasks.length){list.innerHTML="<div class='empty'>Your study tasks will appear here.</div>";return;}
+ tasks.sort((a,b)=>a.time.localeCompare(b.time));
+ tasks.forEach(t=>{
+  const el=document.createElement("div");el.className="task"+(t.done?" done":"");
+  const cb=document.createElement("input");cb.type="checkbox";cb.checked=t.done;
+  cb.addEventListener("change",()=>{t.done=cb.checked;saveTasks();});
+  const info=document.createElement("div");info.className="task-info";
+  const title=document.createElement("strong");title.textContent=t.name;
+  const meta=document.createElement("small");meta.textContent=t.subject+" · "+t.time;
+  info.append(title,meta);
+  const del=document.createElement("button");del.className="iconbtn";del.textContent="✕";del.setAttribute("aria-label","Delete task");
+  del.addEventListener("click",()=>{tasks=tasks.filter(x=>x.id!==t.id);saveTasks();});
+  el.append(cb,info,del);list.append(el);
+ });
+}
+function saveTasks(){localStorage.setItem("wup_tasks",JSON.stringify(tasks));renderTasks();}
+$("addTask").addEventListener("click",()=>{
+ const name=$("taskName").value.trim(),time=$("taskTime").value,subject=$("subject").value;
+ if(!name||!time){alert("Enter a study task and choose its time.");return;}
+ tasks.push({id:Date.now(),name,time,subject,done:false});
+ $("taskName").value="";saveTasks();
+});
+function checkTaskReminders(){
+ const d=new Date(),time=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+ tasks.forEach(t=>{
+  const key=d.toDateString()+"-"+t.id;
+  if(t.time===time&&!t.done&&!taskFired.has(key)){
+   taskFired.add(key);
+   speakHindi("अब "+t.subject+" पढ़ने का समय है। तुम्हारा काम है: "+t.name);
+   if("Notification" in window&&Notification.permission==="granted")new Notification("Wake Up Pro · Study reminder",{body:t.subject+": "+t.name});
+  }
+ });
+}
+setInterval(checkTaskReminders,15000);
+
+$("notifyBtn").addEventListener("click",async()=>{
+ if(!("Notification" in window)){$("notifyStatus").textContent="Notifications are not supported on this browser.";return;}
+ const p=await Notification.requestPermission();
+ $("notifyStatus").textContent=p==="granted"?"Notifications enabled.":"Notifications were not enabled.";
+});
+window.addEventListener("beforeinstallprompt",e=>{
+ e.preventDefault();deferredInstall=e;$("installBtn").style.display="inline-flex";
+});
+$("installBtn").addEventListener("click",async()=>{
+ if(!deferredInstall)return;
+ deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$("installBtn").style.display="none";
+});
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+renderAlarm();renderTasks();
+</script>
+</body>
+</html>
